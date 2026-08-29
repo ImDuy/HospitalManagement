@@ -20,13 +20,13 @@ const Login = () => {
       return alert("Please fill in both email and password.");
     if (!formData.email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/))
       return alert("Please enter a valid email address.");
-    // try {
-    //   const response = await axiosInstance.post('/api/auth/login', formData);
-    //   login(response.data);
-    //   navigate('/tasks');
-    // } catch (error) {
-    //   alert('Login failed. Please try again.');
-    // }
+    try {
+      const response = await axiosInstance.post("/api/auth/login", formData);
+      // login(response.data);
+      // navigate('/tasks');
+    } catch (error) {
+      alert("Login failed. Please try again.");
+    }
   };
 
   return (
