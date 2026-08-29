@@ -22,8 +22,13 @@ const Login = () => {
       return alert("Please enter a valid email address.");
     try {
       const response = await axiosInstance.post("/api/auth/login", formData);
-      login(response.data);
-      // navigate('/tasks');
+      const user = response.data;
+      login(user);
+      navigate(
+        user.role === "patient"
+          ? "/patient-appointments"
+          : "/doctor-appointments",
+      );
     } catch (error) {
       alert(
         `${error.response?.data?.message ?? "Login failed."} Please try again.`,
