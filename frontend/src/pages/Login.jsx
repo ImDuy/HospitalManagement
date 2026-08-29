@@ -4,12 +4,22 @@ import { useNavigate } from "react-router-dom";
 import axiosInstance from "../axiosConfig";
 
 const Login = () => {
-  const [formData, setFormData] = useState({ email: "", password: "" });
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+    role: "patient",
+  });
   const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // input validation
+    if (!formData.email || !formData.password)
+      return alert("Please fill in both email and password.");
+    if (!formData.email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/))
+      return alert("Please enter a valid email address.");
     try {
       const response = await axiosInstance.post("/api/auth/login", formData);
       const user = response.data;
@@ -20,7 +30,9 @@ const Login = () => {
           : "/doctor-appointments",
       );
     } catch (error) {
-      alert("Login failed. Please try again.");
+      alert(
+        `${error.response?.data?.message ?? "Login failed."} Please try again.`,
+      );
     }
   };
 
@@ -28,6 +40,34 @@ const Login = () => {
     <div className="max-w-md mx-auto mt-20">
       <form onSubmit={handleSubmit} className="bg-white p-6 shadow-md rounded">
         <h1 className="text-2xl font-bold mb-4 text-center">Login</h1>
+
+        <div className="mb-4 flex gap-4 justify-center">
+          <label>
+            <input
+              type="radio"
+              name="role"
+              value="patient"
+              checked={formData.role === "patient"}
+              onChange={(e) =>
+                setFormData({ ...formData, role: e.target.value })
+              }
+            />{" "}
+            Patient
+          </label>
+          <label>
+            <input
+              type="radio"
+              name="role"
+              value="doctor"
+              checked={formData.role === "doctor"}
+              onChange={(e) =>
+                setFormData({ ...formData, role: e.target.value })
+              }
+            />{" "}
+            Doctor
+          </label>
+        </div>
+
         <input
           type="email"
           placeholder="Email"

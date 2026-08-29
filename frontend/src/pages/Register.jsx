@@ -58,7 +58,6 @@ const Register = () => {
                 setFormData({
                   ...formData,
                   role: e.target.value,
-                  specialty: "",
                 })
               }
             />{" "}
