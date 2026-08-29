@@ -14,8 +14,21 @@ const Register = () => {
   });
   const navigate = useNavigate();
 
+  const validateInput = () => {
+    if (!formData.name) return alert("Please enter your name");
+    if (formData.role === "doctor" && !formData.specialty)
+      return alert("Please select your specialty.");
+    if (!formData.email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/))
+      return alert("Please enter a valid email address.");
+    if (formData.password.length < 6)
+      return alert("Password must be at least 6 characters.");
+    if (formData.password !== formData.confirmPassword)
+      return alert("Passwords do not match.");
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    validateInput();
     // try {
     //   await axiosInstance.post('/api/auth/register', formData);
     //   alert('Registration successful. Please log in.');
