@@ -4,12 +4,22 @@ import { useNavigate } from "react-router-dom";
 import axiosInstance from "../axiosConfig";
 
 const Login = () => {
-  const [formData, setFormData] = useState({ email: "", password: "" });
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+    role: "patient",
+  });
   const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // input validation
+    if (!formData.email || !formData.password)
+      return alert("Please fill in both email and password.");
+    if (!formData.email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/))
+      return alert("Please enter a valid email address.");
     // try {
     //   const response = await axiosInstance.post('/api/auth/login', formData);
     //   login(response.data);
