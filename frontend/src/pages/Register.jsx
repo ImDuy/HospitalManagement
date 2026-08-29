@@ -34,9 +34,11 @@ const Register = () => {
       if (userData.role === "patient") delete userData.specialty;
       await axiosInstance.post("/api/auth/register", formData);
       alert("Registration successful. Please log in.");
-      navigate("/login");
+      // navigate("/login");
     } catch (error) {
-      alert("Registration failed. Please try again.");
+      alert(
+        `${error.response?.data?.message ?? "Registration failed."} Please try again.`,
+      );
     }
   };
 
