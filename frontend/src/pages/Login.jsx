@@ -22,7 +22,7 @@ const Login = () => {
       return alert("Please enter a valid email address.");
     try {
       const response = await axiosInstance.post("/api/auth/login", formData);
-      // login(response.data);
+      login(response.data);
       // navigate('/tasks');
     } catch (error) {
       alert("Login failed. Please try again.");
