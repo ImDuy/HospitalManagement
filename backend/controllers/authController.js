@@ -63,13 +63,13 @@ const loginUser = async (req, res) => {
         name: user.name,
         email: user.email,
         role: user.role,
-        specialty: specialty,
+        specialty: user.specialty,
         token: generateToken(user.id),
       });
     } else {
       res
         .status(401)
-        .json({ message: "Invalid email, password, or selected role" });
+        .json({ message: "Invalid email, password, or selected role." });
     }
   } catch (error) {
     res.status(500).json({ message: error.message });
