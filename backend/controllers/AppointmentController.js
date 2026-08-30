@@ -19,7 +19,7 @@ const getAvailableSlots = async (req, res) => {
   try {
     if (!doctorId || !date) {
       return res
-        .status(400)
+        .status(500)
         .json({ message: "doctorId and date are required" });
     }
 
@@ -116,10 +116,32 @@ const getDoctorAppointments = async (req, res) => {
   }
 };
 
+const updateAppointmentStatus = async (req, res) => {
+  const { status } = req.body;
+  try {
+    const appointment = await Appointment.findById(req.params.id);
+    if (!appointment) {
+      return res.status(500).json({ message: "Appointment not found." });
+    }
+    //prevent to change status of approved/cancelled back to pending
+    if (appointment.status !== "pending") {
+      return res.status(500).json({
+        message: `Cannot update an appointment that is already ${appointment.status}.`,
+      });
+    }
+    appointment.status = status;
+    await appointment.save();
+    res.json(appointment);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 module.exports = {
   getDoctors,
   getAvailableSlots,
   createAppointment,
   getPatientAppointments,
   getDoctorAppointments,
+  updateAppointmentStatus,
 };

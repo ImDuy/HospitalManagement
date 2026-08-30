@@ -24,8 +24,48 @@ export default function DoctorAppointments() {
     fetchEnquiries();
   }, [user]);
 
-  const handleApprove = (id) => {};
-  const handleDecline = (id) => {};
+  const handleApprove = async (id) => {
+    try {
+      await axiosInstance.put(
+        `api/appointments/${id}/status`,
+        { status: "approved" },
+        {
+          headers: { Authorization: `Bearer ${user.token}` },
+        },
+      );
+      setAppointments((prev) =>
+        appointments.map((a) =>
+          a._id === id ? { ...a, status: "approved" } : a,
+        ),
+      );
+    } catch (error) {
+      alert(
+        error.response?.data?.message ??
+          "Failed to approve appointment enquiry.",
+      );
+    }
+  };
+  const handleDecline = async (id) => {
+    try {
+      await axiosInstance.put(
+        `api/appointments/${id}/status`,
+        { status: "cancelled" },
+        {
+          headers: { Authorization: `Bearer ${user.token}` },
+        },
+      );
+      setAppointments((prev) =>
+        appointments.map((a) =>
+          a._id === id ? { ...a, status: "cancelled" } : a,
+        ),
+      );
+    } catch (error) {
+      alert(
+        error.response?.data?.message ??
+          "Failed to decline appointment enquiry.",
+      );
+    }
+  };
   return (
     <div className="container mx-auto p-6">
       <h1 className="text-2xl font-bold mb-6">My Appointments</h1>
