@@ -68,7 +68,7 @@ export default function NewBooking() {
       navigate(0); // reload state
     }
   };
-
+  console.log(user);
   return (
     <div className="container mx-auto p-6 grid grid-cols-2 gap-8">
       <div>
