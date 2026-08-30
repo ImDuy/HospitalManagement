@@ -44,7 +44,22 @@ export default function NewBooking() {
     fetchTimeSlots();
   }, [selectedDoctor, selectedDate, user]);
 
-  const handleBookingSubmit = () => {};
+  const handleBookingSubmit = async () => {
+    try {
+      await axiosInstance.post(
+        "/api/appointments",
+        {
+          doctorId: selectedDoctor._id,
+          date: selectedDate,
+          time: selectedTimeSlot,
+        },
+        { headers: { Authorization: `Bearer ${user.token}` } },
+      );
+      alert("success");
+    } catch (error) {
+      alert("error");
+    }
+  };
 
   return (
     <div className="container mx-auto p-6 grid grid-cols-2 gap-8">
