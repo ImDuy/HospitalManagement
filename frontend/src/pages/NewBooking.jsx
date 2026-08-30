@@ -21,7 +21,7 @@ export default function NewBooking() {
         });
         setDoctors(res.data);
       } catch (error) {
-        alert("Failed to load doctors.");
+        alert(error.response?.data?.message ?? "Failed to load doctors.");
       }
     };
     fetchDoctors();
@@ -32,13 +32,13 @@ export default function NewBooking() {
     const fetchTimeSlots = async () => {
       try {
         const res = await axiosInstance.get("/api/appointments/slots", {
-          params: { doctorId: selectedDoctor._id, selectedDate },
+          params: { doctorId: selectedDoctor._id, date: selectedDate },
           headers: { Authorization: `Bearer ${user.token}` },
         });
         setTimeSlots(res.data);
         setSelectedTimeSlot(null);
       } catch (error) {
-        alert("Failed to load time slots.");
+        alert(error.response?.data?.message ?? "Failed to load time slots.");
       }
     };
     fetchTimeSlots();
