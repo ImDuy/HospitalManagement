@@ -8,7 +8,13 @@ export default function AppointmentTable({
   onDecline,
 }) {
   if (appointments.length === 0) {
-    return <p className="text-gray-500">No appointment yet.</p>;
+    return (
+      <p className="text-gray-500">
+        {forDoctor
+          ? "There is no appointment at the moment."
+          : "You have not booked any appointment yet."}
+      </p>
+    );
   }
 
   return (
