@@ -41,4 +41,20 @@ const getAvailableSlots = async (req, res) => {
   }
 };
 
-module.exports = { getDoctors, getAvailableSlots };
+const createAppointment = async (req, res) => {
+  const { doctorId, date, time } = req.body;
+  try {
+    const appointment = await Appointment.create({
+      patientId: req.user.id,
+      doctorId,
+      date,
+      time,
+      status: "pending",
+    });
+    res.status(201).json(appointment);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+module.exports = { getDoctors, getAvailableSlots, createAppointment };
