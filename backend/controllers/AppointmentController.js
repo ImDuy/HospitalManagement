@@ -107,6 +107,9 @@ const getDoctorAppointments = async (req, res) => {
       status: a.status,
     }));
 
+    const STATUS_ORDER = { pending: 0, approved: 1, cancelled: 2 };
+    formatted.sort((a, b) => STATUS_ORDER[a.status] - STATUS_ORDER[b.status]); // sorting to show pending appointments first
+
     res.json(formatted);
   } catch (error) {
     res.status(500).json({ message: error.message });
