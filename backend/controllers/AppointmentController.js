@@ -44,6 +44,19 @@ const getAvailableSlots = async (req, res) => {
 const createAppointment = async (req, res) => {
   const { doctorId, date, time } = req.body;
   try {
+    // re-validation to make sure time slot is available
+    const existing = await Appointment.findOne({
+      doctorId,
+      date,
+      time,
+      status: { $ne: "cancelled" },
+    });
+    if (existing) {
+      return res
+        .status(500)
+        .json({ message: "This time slot has been occupied." });
+    }
+    // creating appointment
     const appointment = await Appointment.create({
       patientId: req.user.id,
       doctorId,
