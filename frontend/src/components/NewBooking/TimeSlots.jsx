@@ -1,9 +1,9 @@
 import React from "react";
 
-export default function TimeSlots({ slots, selectedTime, onSelect }) {
+export default function TimeSlots({ timeSlots, selectedTimeSlot, onSelect }) {
   return (
     <div className="grid grid-cols-3 gap-3 mt-4">
-      {slots.map((slot) => (
+      {timeSlots.map((slot) => (
         <button
           key={slot.time}
           disabled={!slot.available}
@@ -11,7 +11,7 @@ export default function TimeSlots({ slots, selectedTime, onSelect }) {
           className={`p-3 rounded border ${
             !slot.available
               ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-              : selectedTime === slot.time
+              : selectedTimeSlot === slot.time
                 ? "bg-blue-600 text-white"
                 : "bg-white"
           }`}
