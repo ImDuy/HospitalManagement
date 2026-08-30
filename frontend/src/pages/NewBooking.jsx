@@ -4,6 +4,7 @@ import TimeSlots from "../components/NewBooking/TimeSlots";
 import DateSelector from "../components/NewBooking/DateSelector";
 import { useAuth } from "../context/AuthContext";
 import axiosInstance from "../axiosConfig";
+import { useNavigate } from "react-router-dom";
 
 export default function NewBooking() {
   const { user } = useAuth();
@@ -12,6 +13,7 @@ export default function NewBooking() {
   const [selectedDate, setSelectedDate] = useState("");
   const [timeSlots, setTimeSlots] = useState([]);
   const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchDoctors = async () => {
@@ -55,9 +57,15 @@ export default function NewBooking() {
         },
         { headers: { Authorization: `Bearer ${user.token}` } },
       );
-      alert("success");
+      alert(
+        "Book Appointment Successfully. Please wait for response from our doctor.",
+      );
+      navigate("/patient-appointments");
     } catch (error) {
-      alert("error");
+      alert(
+        `${error.response?.data?.message ?? "Booking failed."} Please try again.`,
+      );
+      navigate(0); // reload state
     }
   };
 
