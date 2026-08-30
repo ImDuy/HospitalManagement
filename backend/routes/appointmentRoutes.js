@@ -5,7 +5,8 @@ const {
   createAppointment,
   getPatientAppointments,
   getDoctorAppointments,
-} = require("../controllers/appointmentController");
+  updateAppointmentStatus,
+} = require("../controllers/AppointmentController");
 const { protect } = require("../middleware/authMiddleware");
 const router = express.Router();
 
@@ -15,5 +16,6 @@ router.get("/patient", protect, getPatientAppointments);
 router.get("/doctor", protect, getDoctorAppointments);
 
 router.post("/", protect, createAppointment);
+router.put("/:id/status", protect, updateAppointmentStatus);
 
 module.exports = router;

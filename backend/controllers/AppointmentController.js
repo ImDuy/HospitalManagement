@@ -138,4 +138,5 @@ module.exports = {
   createAppointment,
   getPatientAppointments,
   getDoctorAppointments,
+  updateAppointmentStatus,
 };
