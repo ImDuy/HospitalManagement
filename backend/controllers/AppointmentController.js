@@ -19,7 +19,7 @@ const getAvailableSlots = async (req, res) => {
   try {
     if (!doctorId || !date) {
       return res
-        .status(400)
+        .status(500)
         .json({ message: "doctorId and date are required" });
     }
 
@@ -111,6 +111,22 @@ const getDoctorAppointments = async (req, res) => {
     formatted.sort((a, b) => STATUS_ORDER[a.status] - STATUS_ORDER[b.status]); // sorting to show pending appointments first
 
     res.json(formatted);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+const updateAppointmentStatus = async (req, res) => {
+  const { status } = req.body;
+  try {
+    const appointment = await Appointment.findById(req.params.id);
+    if (!appointment) {
+      return res.status(500).json({ message: "Appointment not found." });
+    }
+
+    appointment.status = status;
+    await appointment.save();
+    res.json(appointment);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
