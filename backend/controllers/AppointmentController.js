@@ -41,4 +41,61 @@ const getAvailableSlots = async (req, res) => {
   }
 };
 
-module.exports = { getDoctors, getAvailableSlots };
+const createAppointment = async (req, res) => {
+  const { doctorId, date, time } = req.body;
+  try {
+    // re-validation to make sure time slot is available
+    const existing = await Appointment.findOne({
+      doctorId,
+      date,
+      time,
+      status: { $ne: "cancelled" },
+    });
+    if (existing) {
+      return res
+        .status(500)
+        .json({ message: "This time slot has been occupied." });
+    }
+    // creating appointment
+    const appointment = await Appointment.create({
+      patientId: req.user.id,
+      doctorId,
+      date,
+      time,
+      status: "pending",
+    });
+    res.status(201).json(appointment);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+const getPatientAppointments = async (req, res) => {
+  try {
+    const appointments = await Appointment.find({
+      patientId: req.user.id,
+    }).populate("doctorId", "name specialty");
+    const formatted = appointments.map((a) => ({
+      _id: a._id,
+      name: a.doctorId.name,
+      specialty: a.doctorId.specialty,
+      date: a.date,
+      time: a.time,
+      status: a.status,
+    }));
+
+    const STATUS_ORDER = { approved: 0, pending: 1, cancelled: 2 };
+    formatted.sort((a, b) => STATUS_ORDER[a.status] - STATUS_ORDER[b.status]); // sorting to show approved appointments first
+
+    res.json(formatted);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+module.exports = {
+  getDoctors,
+  getAvailableSlots,
+  createAppointment,
+  getPatientAppointments,
+};

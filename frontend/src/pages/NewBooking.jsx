@@ -4,6 +4,7 @@ import TimeSlots from "../components/NewBooking/TimeSlots";
 import DateSelector from "../components/NewBooking/DateSelector";
 import { useAuth } from "../context/AuthContext";
 import axiosInstance from "../axiosConfig";
+import { useNavigate } from "react-router-dom";
 
 export default function NewBooking() {
   const { user } = useAuth();
@@ -12,6 +13,7 @@ export default function NewBooking() {
   const [selectedDate, setSelectedDate] = useState("");
   const [timeSlots, setTimeSlots] = useState([]);
   const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchDoctors = async () => {
@@ -30,19 +32,42 @@ export default function NewBooking() {
   useEffect(() => {
     if (!selectedDoctor || !selectedDate) return;
     const fetchTimeSlots = async () => {
+      setSelectedTimeSlot(null); // reset the selected time slot state when changing date
       try {
         const res = await axiosInstance.get("/api/appointments/slots", {
           params: { doctorId: selectedDoctor._id, date: selectedDate },
           headers: { Authorization: `Bearer ${user.token}` },
         });
         setTimeSlots(res.data);
-        setSelectedTimeSlot(null);
       } catch (error) {
         alert(error.response?.data?.message ?? "Failed to load time slots.");
       }
     };
     fetchTimeSlots();
   }, [selectedDoctor, selectedDate, user]);
+
+  const handleBookingSubmit = async () => {
+    try {
+      await axiosInstance.post(
+        "/api/appointments",
+        {
+          doctorId: selectedDoctor._id,
+          date: selectedDate,
+          time: selectedTimeSlot,
+        },
+        { headers: { Authorization: `Bearer ${user.token}` } },
+      );
+      alert(
+        "Book Appointment Successfully. Please wait for response from our doctor.",
+      );
+      navigate("/patient-appointments");
+    } catch (error) {
+      alert(
+        `${error.response?.data?.message ?? "Booking failed."} Please try again.`,
+      );
+      navigate(0); // reload state
+    }
+  };
 
   return (
     <div className="container mx-auto p-6 grid grid-cols-2 gap-8">
@@ -51,7 +76,11 @@ export default function NewBooking() {
         <DoctorList
           doctors={doctors}
           selectedDoctor={selectedDoctor}
-          onSelect={setSelectedDoctor}
+          onSelect={(doctor) => {
+            setSelectedDoctor(doctor);
+            setSelectedDate("");
+            setSelectedTimeSlot(null);
+          }}
         />
       </div>
       <div>
@@ -63,12 +92,21 @@ export default function NewBooking() {
           />
         )}
 
-        {selectedDoctor && selectedDate && (
+        {selectedDate && (
           <TimeSlots
             timeSlots={timeSlots}
             selectedTimeSlot={selectedTimeSlot}
             onSelect={setSelectedTimeSlot}
           />
+        )}
+
+        {selectedTimeSlot && (
+          <button
+            onClick={handleBookingSubmit}
+            className="mt-6 w-full bg-blue-600 text-white p-3 rounded-lg"
+          >
+            Book Appointment
+          </button>
         )}
       </div>
     </div>
