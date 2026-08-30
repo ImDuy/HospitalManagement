@@ -123,7 +123,12 @@ const updateAppointmentStatus = async (req, res) => {
     if (!appointment) {
       return res.status(500).json({ message: "Appointment not found." });
     }
-
+    //prevent to change status of approved/cancelled back to pending
+    if (appointment.status !== "pending") {
+      return res.status(500).json({
+        message: `Cannot update an appointment that is already ${appointment.status}.`,
+      });
+    }
     appointment.status = status;
     await appointment.save();
     res.json(appointment);
