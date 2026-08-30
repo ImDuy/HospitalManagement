@@ -93,9 +93,33 @@ const getPatientAppointments = async (req, res) => {
   }
 };
 
+const getDoctorAppointments = async (req, res) => {
+  try {
+    const appointments = await Appointment.find({
+      doctorId: req.user.id,
+    }).populate("patientId", "name");
+
+    const formatted = appointments.map((a) => ({
+      _id: a._id,
+      name: a.patientId.name,
+      date: a.date,
+      time: a.time,
+      status: a.status,
+    }));
+
+    const STATUS_ORDER = { pending: 0, approved: 1, cancelled: 2 };
+    formatted.sort((a, b) => STATUS_ORDER[a.status] - STATUS_ORDER[b.status]); // sorting to show pending appointments first
+
+    res.json(formatted);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 module.exports = {
   getDoctors,
   getAvailableSlots,
   createAppointment,
   getPatientAppointments,
+  getDoctorAppointments,
 };

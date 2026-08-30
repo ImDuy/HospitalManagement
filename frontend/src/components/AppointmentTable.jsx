@@ -8,7 +8,13 @@ export default function AppointmentTable({
   onDecline,
 }) {
   if (appointments.length === 0) {
-    return <p className="text-gray-500">No appointment yet.</p>;
+    return (
+      <p className="text-gray-500">
+        {forDoctor
+          ? "There is no appointment at the moment."
+          : "You have not booked any appointment yet."}
+      </p>
+    );
   }
 
   return (
@@ -33,22 +39,25 @@ export default function AppointmentTable({
             <td className="p-4">
               <StatusBadge status={a.status} />
             </td>
-            {forDoctor && a.status === "pending" && (
-              <td className="p-4 space-x-2">
-                <button
-                  onClick={() => onApprove(a._id)}
-                  className="bg-blue-600 text-white px-3 py-1 rounded"
-                >
-                  Approve
-                </button>
-                <button
-                  onClick={() => onDecline(a._id)}
-                  className="border px-3 py-1 rounded"
-                >
-                  Decline
-                </button>
-              </td>
-            )}
+            {forDoctor &&
+              (a.status === "pending" ? (
+                <td className="p-4 space-x-2">
+                  <button
+                    onClick={() => onApprove(a._id)}
+                    className="bg-blue-600 text-white px-3 py-1 rounded"
+                  >
+                    Approve
+                  </button>
+                  <button
+                    onClick={() => onDecline(a._id)}
+                    className="border px-3 py-1 rounded"
+                  >
+                    Decline
+                  </button>
+                </td>
+              ) : (
+                <td className="p-4 italic text-sm">No action needed.</td>
+              ))}
           </tr>
         ))}
       </tbody>
