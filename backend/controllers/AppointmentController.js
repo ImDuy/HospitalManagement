@@ -64,8 +64,8 @@ const getPatientAppointments = async (req, res) => {
     }).populate("doctorId", "name specialty");
     const formatted = appointments.map((a) => ({
       _id: a._id,
-      doctorName: a.doctorId.name,
-      doctorSpecialty: a.doctorId.specialty,
+      name: a.doctorId.name,
+      specialty: a.doctorId.specialty,
       date: a.date,
       time: a.time,
       status: a.status,
