@@ -28,7 +28,7 @@ export default function DateSelector({ selectedDate, onSelect }) {
   return (
     <div className="flex gap-3">
       {dates.map((date) => {
-        const value = date.toISOString().split("T")[0];
+        const value = date.toLocaleDateString("en-CA");
         const isSelected = selectedDate === value;
         return (
           <button
