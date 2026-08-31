@@ -33,10 +33,9 @@ export default function DoctorAppointments() {
           headers: { Authorization: `Bearer ${user.token}` },
         },
       );
+      alert("The appointment has been approved, we will inform your patient.");
       setAppointments((prev) =>
-        appointments.map((a) =>
-          a._id === id ? { ...a, status: "approved" } : a,
-        ),
+        prev.map((a) => (a._id === id ? { ...a, status: "approved" } : a)),
       );
     } catch (error) {
       alert(
@@ -54,10 +53,9 @@ export default function DoctorAppointments() {
           headers: { Authorization: `Bearer ${user.token}` },
         },
       );
+      alert("The appointment has been cancelled, we will inform your patient.");
       setAppointments((prev) =>
-        appointments.map((a) =>
-          a._id === id ? { ...a, status: "cancelled" } : a,
-        ),
+        prev.map((a) => (a._id === id ? { ...a, status: "cancelled" } : a)),
       );
     } catch (error) {
       alert(
