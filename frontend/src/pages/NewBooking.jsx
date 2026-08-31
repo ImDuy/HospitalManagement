@@ -65,10 +65,12 @@ export default function NewBooking() {
       alert(
         `${error.response?.data?.message ?? "Booking failed."} Please try again.`,
       );
-      navigate(0); // reload state
+      // reset states
+      setSelectedDoctor(null);
+      setSelectedDate("");
+      setSelectedTimeSlot(null);
     }
   };
-  console.log(user);
   return (
     <div className="container mx-auto p-6 grid grid-cols-2 gap-8">
       <div>
